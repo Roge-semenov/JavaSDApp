@@ -19,11 +19,12 @@ public class UserService {
 
     public User saveUser(User user) {
         logger.info("Saving user: {}", user.getUsername());
+        user.setUsername(user.getUsername().toLowerCase());
         return userRepository.save(user);
     }
 
     public User findByUsername(String username) {
-        logger.info("Finding user by username: {}", username);
-        return userRepository.findByUsername(username).orElse(null);
+        logger.info("Finding user by username: {}", username.toLowerCase());
+        return userRepository.findByUsername(username.toLowerCase()).orElse(null);
     }
 }

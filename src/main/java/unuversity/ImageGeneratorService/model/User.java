@@ -1,10 +1,12 @@
 package unuversity.ImageGeneratorService.model;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "app_user")
@@ -15,6 +17,9 @@ public class User {
     private Long id;
     private String username;
     private String password;
+
+    @ElementCollection
+    private List<String> generatedImages;
 
     // Getters and setters
 
@@ -40,5 +45,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<String> getGeneratedImages() {
+        return generatedImages;
+    }
+
+    public void setGeneratedImages(List<String> generatedImages) {
+        this.generatedImages = generatedImages;
     }
 }

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import unuversity.ImageGeneratorService.model.User;
 import unuversity.ImageGeneratorService.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -18,23 +21,31 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody User user) {
         logger.info("Received registration request for user: {}", user.getUsername());
-        if (userService.findByUsername(user.getUsername()) != null) {
-            return ResponseEntity.badRequest().body("User already exists");
+        Map<String, String> response = new HashMap<>();
+        if (userService.findByUsername(user.getUsername().toLowerCase()) != null) {
+            response.put("message", "User already exists");
+            return ResponseEntity.badRequest().body(response);
         }
+        user.setUsername(user.getUsername().toLowerCase());
         userService.saveUser(user);
-        return ResponseEntity.ok("User registered successfully");
+        response.put("message", "User registered successfully");
+        return ResponseEntity.ok(response);
     }
 
+
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
         logger.info("Received login request for user: {}", user.getUsername());
-        User foundUser = userService.findByUsername(user.getUsername());
+        Map<String, String> response = new HashMap<>();
+        User foundUser = userService.findByUsername(user.getUsername().toLowerCase());
         if (foundUser != null && foundUser.getPassword().equals(user.getPassword())) {
-            return ResponseEntity.ok("Login successful");
+            response.put("message", "Login successful");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            response.put("message", "Invalid username or password");
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }
